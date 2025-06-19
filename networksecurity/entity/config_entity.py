@@ -103,7 +103,7 @@ class DataValidationConfig:
             self.valid_data_dir,
             training_pipeline.TEST_FILE_NAME
         )
-
+        
         # Folder and file paths for invalid (bad or missing) data
         self.invalid_data_dir: str = os.path.join(
             self.data_validation_dir,

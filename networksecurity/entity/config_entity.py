@@ -175,4 +175,4 @@ class ModelTrainerConfig:
         self.expected_accuracy: float = training_pipeline.MODEL_TRAINER_EXPECTED_SCORE
 
         # Threshold to detect overfitting or underfitting
-        self.overfitting_underfitting_threshold = training_pipeline.MODEL_TRAINER_OVER_FIITING_UNDER_FITTING_THRESHOLD
+        self.overfitting_underfitting_threshold = training_pipeline.MODEL_TRAINER_OVER_FITTING_UNDER_FITTING_THRESHOLD

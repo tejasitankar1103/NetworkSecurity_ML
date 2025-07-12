@@ -6,7 +6,7 @@ ca = certifi.where()
 
 from dotenv import load_dotenv
 load_dotenv()
-mongo_db_url = os.getenv("MONGO_URL_KEY")
+mongo_db_url = os.getenv("MONGO_DB_URL")
 print(mongo_db_url)
 
 import pymongo
@@ -58,7 +58,10 @@ async def train_route():
         train_pipeline.run_pipeline()
         return Response("Training is Successful")
     except Exception as e:
-        raise NetworkSecurityException(e,sys)
+        import traceback
+        print("🔥 Error in /train route:", e)
+        traceback.print_exc()
+        return Response(content=f"Training Failed: {e}", status_code=500)
     
 @app.post("/predict")
 async def predict_route(request:Request,file:UploadFile=File(...)):

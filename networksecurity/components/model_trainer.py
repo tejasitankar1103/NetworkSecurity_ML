@@ -38,6 +38,10 @@ from sklearn.ensemble import (                             # Ensemble methods (m
 
 import mlflow
 
+import dagshub
+dagshub.init(repo_owner='tejasitankar10', repo_name='NetworkSecurity_ML', mlflow=True)
+
+
 # ==============================================================================
 # MAIN MODEL TRAINER CLASS
 # ==============================================================================

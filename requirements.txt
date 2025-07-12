@@ -7,7 +7,11 @@ pymongo[srv]>=3.12
 matplotlib
 scikit-learn
 certifi
-mlflow
+mlflow==2.9.2
 pyaml
+dagshub
+fastapi
+uvicorn
+python-multipart
 
 ##-e .

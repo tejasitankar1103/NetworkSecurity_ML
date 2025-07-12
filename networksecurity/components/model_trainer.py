@@ -39,7 +39,12 @@ from sklearn.ensemble import (                             # Ensemble methods (m
 import mlflow
 
 import dagshub
-dagshub.init(repo_owner='tejasitankar10', repo_name='NetworkSecurity_ML', mlflow=True)
+#dagshub.init(repo_owner='tejasitankar10', repo_name='NetworkSecurity_ML', mlflow=True)
+
+
+os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/tejasitankar10/NetworkSecurity_ML.mlflow"
+os.environ["MLFLOW_TRACKING_USERNAME"] = "tejasitankar10"
+os.environ["MLFLOW_TRACKING_PASSWORD"] = "5f751cd9eed1faf96580866b210e09fe8ae9d9b1"
 
 
 # ==============================================================================

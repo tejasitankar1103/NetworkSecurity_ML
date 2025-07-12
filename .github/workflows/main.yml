@@ -20,10 +20,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Lint code
-        run: echo "Linting repository"
+        run: echo "🔍 Linting repository..."
 
       - name: Run unit tests
-        run: echo "Running unit tests"
+        run: echo "🧪 Running unit tests..."
 
   build-and-push-ecr-image:
     name: Continuous Delivery
@@ -56,11 +56,14 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
         run: |
+          echo "🐳 Building Docker image..."
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          echo "📤 Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   Continuous-Deployment:
+    name: Continuous Deployment
     needs: build-and-push-ecr-image
     runs-on: self-hosted
     steps:
@@ -78,28 +81,39 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       
-      - name: Clean up disk space before deploy
+      - name: 🧹 Clean up Docker environment
         run: |
+          echo "🧹 Removing old containers and images..."
           docker container prune -f
           docker image prune -a -f
           docker volume prune -f
 
-      - name: Pull latest image from ECR
+      - name: 📦 Pull latest Docker image
         run: |
+          echo "📦 Pulling image from ECR..."
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
-         
-      - name: Stop and remove existing container (if running)
-        run: |
-          docker rm -f networksecurity || true  # Safe cleanup
 
-      - name: Run Docker container to serve users
+      - name: 🛑 Stop and remove existing container
         run: |
+          echo "🛑 Stopping old container (if exists)..."
+          docker rm -f networksecurity || true
+
+      - name: 🚀 Run new Docker container
+        run: |
+          echo "🚀 Starting new container..."
           docker run -d -p 8080:8080 --ipc="host" --name=networksecurity \
-            -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' \
-            -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
-            -e 'AWS_REGION=${{ secrets.AWS_REGION }}' \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
             ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - name: Final cleanup to reduce space
+      - name: 🔍 Show last container logs
         run: |
+          echo "📄 Tailing container logs..."
+          sleep 5
+          docker logs networksecurity | tail -n 30
+
+      - name: 🧼 Final cleanup to reduce space
+        run: |
+          echo "🧼 Final cleanup..."
           docker system prune -f
